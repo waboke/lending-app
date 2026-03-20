@@ -3,7 +3,9 @@ version: "3.9"
 services:
   web:
     build: .
-    container_name: loan_app
+    env_file:
+    - .env
+    #container_name: loan_app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
