@@ -1,0 +1,12 @@
+Django>=4.2,<5.0
+celery>=5.3,<6.0
+redis>=4.5
+django-cors-headers>=4.0
+gunicorn>=21.0
+
+# Optional but common
+python-dotenv>=1.0
+gunicorn>=21.0
+psycopg2-binary>=2.9
+celery>=5.3
+redis>=4.5
