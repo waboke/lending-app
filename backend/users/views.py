@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from .models import User, Profile
 from .serializers import RegisterSerializer, UserSerializer, ProfileSerializer
 from .permissions import IsAdmin
+from rest_framework.views import APIView
+from .serializers import LoginSerializer
+
 
 # Register
 class RegisterView(generics.CreateAPIView):
@@ -30,3 +33,30 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return Response(serializer.validated_data)
+
+        return Response(serializer.errors, status=400)
+
+class VerifyOTPView(APIView):
+    def post(self, request):
+        serializer = VerifyOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return Response(serializer.validated_data)
+
+        return Response(serializer.errors, status=400)
+
+class ResendOTPView(APIView):
+    def post(self, request):
+        serializer = ResendOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return Response(serializer.validated_data)
+
+        return Response(serializer.errors, status=400)
