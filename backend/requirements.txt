@@ -4,6 +4,8 @@ redis>=4.5
 django-cors-headers>=4.0
 gunicorn>=21.0
 djangorestframework
+djangorestframework-simplejwt
+Pillow==10.2.0
 
 # Optional but common
 python-dotenv>=1.0
@@ -11,3 +13,4 @@ gunicorn>=21.0
 psycopg2-binary>=2.9
 celery>=5.3
 redis>=4.5
+drf-yasg
