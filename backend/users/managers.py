@@ -1,41 +1,32 @@
 from django.contrib.auth.models import BaseUserManager
 
-class UserManager(BaseUserManager):
 
-    def create_user(self, email,  phone_number, username, password, first_name, last_name):
+#UserManager
+class UserManager(BaseUserManager):
+    def create_user(self, email, full_name, password=None, **extra_fields):
         if not email:
-            raise ValueError("Users must have an email address")
+            raise ValueError("Email is required")
 
         email = self.normalize_email(email)
-
         user = self.model(
             email=email,
-            username=username,
-            phone_number=phone_number,
-            first_name=first_name,
-            last_name=last_name,
+            full_name=full_name,
+            **extra_fields
         )
-
         user.set_password(password)
-        user.is_active = False  # require OTP verification
-        user.save(using=self._db)
-
-        return user
-
-    def create_superuser(self, email, username,phone_number,password, first_name, last_name):
-        user = self.create_user(
-            email,
-            username,
-            phone_number,
-            first_name,
-            last_name,
-            password
-        )
-
-        user.is_staff = True
-        user.is_superuser = True
-        user.is_active = True
-        user.role = 'admin'
-
+        user.is_active = extra_fields.get("is_active", True)
         user.save(using=self._db)
         return user
+
+    def create_superuser(self, email, full_name, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("role", "admin")
+
+        if not extra_fields.get("is_staff"):
+            raise ValueError("Superuser must have is_staff=True")
+        if not extra_fields.get("is_superuser"):
+            raise ValueError("Superuser must have is_superuser=True")
+
+        return self.create_user(email, full_name, password, **extra_fields)
+

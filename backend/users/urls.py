@@ -1,25 +1,18 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import (RegisterView, 
-                    MeView, 
-                    UserViewSet, 
-                    ProfileViewSet,
-                    VerifyOTPView,
-                    ResendOTPView,
-                      LoginView)
-router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'profiles', ProfileViewSet)
+from .views import RegisterView, LoginView
+from .views import (ProfileCreateUpdateView,
+                    ProfileDetailView,
+                    KYCView, 
+                    SendOTPView, 
+                    VerifyOTPView)
 
-urlpatterns = [
-    path('', include(router.urls)),
+urlpatterns= [
     path('register/', RegisterView.as_view(), name='register'),
-    path('me/', MeView.as_view(), name='me'),
-    path('login/', LoginView.as_view(), name="login"),
-    path('verify-otp/', VerifyOTPView.as_view(), name="verify-otp"),
-    path('resend-otp/', ResendOTPView.as_view(), name="resend-otp"),
     path('login/', LoginView.as_view(), name='login'),
+    path('profile/', ProfileCreateUpdateView.as_view()),
+    path('profile/detail/', ProfileDetailView.as_view()),
+    path('kyc/', KYCView.as_view()),
+    path('otp/send/', SendOTPView.as_view()),
+    path('otp/verify/', VerifyOTPView.as_view()),
    
-
-    
 ]
