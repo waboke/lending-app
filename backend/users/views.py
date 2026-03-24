@@ -94,25 +94,7 @@ class ProfileDetailView(APIView):
             data["extra"] = BusinessSerializer(user.businessprofile).data
 
         return Response(data)
-#Validate category
-def validate_category(self, value):
-    allowed = ["military", "paramilitary", "civil_servant", "businessman"]
-    if value not in allowed:
-        raise serializers.ValidationError("Invalid category")
-    return value
 
-    if profile.category != category:
-        raise serializers.ValidationError("Category change not allowed")
-
-class LoginView(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-
-        if serializer.is_valid():
-            return Response(serializer.validated_data)
-
-        return Response(serializer.errors, status=400)
-    
     
 class VerifyOTPView(APIView):
     def post(self, request):
