@@ -5,7 +5,7 @@ from django.utils import timezone
 import re
 
 # Import all models you're using in forms
-from .models import (
+from .models1 import (
     LoanApplication, 
     LoanOffer,      # Add this import
     Loan, 

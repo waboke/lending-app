@@ -11,7 +11,7 @@ from decimal import Decimal
 import json
 from datetime import datetime, timedelta
 
-from .models import (
+from .models1 import (
     LoanApplication, LoanOffer, Loan, Repayment, 
     PaymentSchedule, LoanDocument, Notification
 )

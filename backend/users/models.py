@@ -58,7 +58,7 @@ CATEGORY_CHOICES = (
 #Base Profile
 class Profile(models.Model):
     
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
 
@@ -73,7 +73,7 @@ class Profile(models.Model):
 
 # Military personnel
 class MilitaryProfile(models.Model):
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     service_number = models.CharField(max_length=50)
     rank = models.CharField(max_length=50)
@@ -82,7 +82,7 @@ class MilitaryProfile(models.Model):
 
 #paramilitary
 class ParamilitaryProfile(models.Model):
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     agency = models.CharField(max_length=100)
     rank = models.CharField(max_length=50)
@@ -90,14 +90,14 @@ class ParamilitaryProfile(models.Model):
 
 #Civil Sercices
 class CivilServantProfile(models.Model):
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     ministry = models.CharField(max_length=100)
     grade_level = models.CharField(max_length=20)
     employee_id = models.CharField(max_length=50)
 #Bussnessme
 class BusinessProfile(models.Model):
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     business_name = models.CharField(max_length=255)
     registration_number = models.CharField(max_length=100)
@@ -111,7 +111,7 @@ class KYC(models.Model):
         ("rejected", "Rejected"),
     )
 
-    user = models.OneToOneField("User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     id_number = models.CharField(max_length=50, unique=True)
     document_type = models.CharField(max_length=50)
@@ -122,7 +122,7 @@ class KYC(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     reviewed_by = models.ForeignKey(
-        "User",
+       settings.AUTH_USER_MODEL,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -140,7 +140,7 @@ class OTP(models.Model):
         ("password_reset", "Password Reset"),
     )
 
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     code = models.CharField(max_length=6)
     purpose = models.CharField(max_length=50, choices=PURPOSE_CHOICES)
