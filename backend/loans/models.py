@@ -24,11 +24,12 @@ class Loan(models.Model):
         ('rejected', 'Rejected'),
         ('disbursed', 'Disbursed'),
 <<<<<<< HEAD
-    ])
+    ]
     
     created_at = models.DateTimeField(auto_now_add=True)
 =======
     ]
+    
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
