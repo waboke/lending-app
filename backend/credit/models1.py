@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 from django.db import models
 from django.conf import settings
 # Create your models here.
+=======
+
+>>>>>>> rupert_users
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -26,7 +30,11 @@ class LoanApplication(models.Model):
     ]
     
     application_id = models.CharField(max_length=20, unique=True, editable=False)
+<<<<<<< HEAD
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='applications')
+=======
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
+>>>>>>> rupert_users
     loan_type = models.CharField(max_length=20, choices=LOAN_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     term_months = models.IntegerField(help_text="Loan term in months")
@@ -278,7 +286,11 @@ class Notification(models.Model):
         ('loan_closed', 'Loan Closed'),
     ]
     
+<<<<<<< HEAD
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+=======
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+>>>>>>> rupert_users
     notification_type = models.CharField(max_length=30, choices=NOTIFICATION_TYPES)
     title = models.CharField(max_length=200)
     message = models.TextField()
