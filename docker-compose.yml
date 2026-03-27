@@ -4,8 +4,6 @@ services:
     build: ./backend
     env_file:
      - .env
-
-   
     #container_name: loan_app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -29,12 +27,13 @@ services:
   db:
     image: postgres:15
     ports:
-      - "5433:5432"
+      - "5434:5432"
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      
+      HOST: ${DB_HOST}
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
   

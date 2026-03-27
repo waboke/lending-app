@@ -1,34 +1,4 @@
 
-docker-compose down --volumes --remove-orphans
-docker system prune -f
-docker-compose up --build
-
-# Run server
-docker-compose up
-
-docker-compose up --build
-
-docker-compose exec web python manage.py shell
-
-# Create superuser
-docker-compose exec web python manage.py createsuperuser
-
-# Create New App
-docker-compose exec web python manage.py startapp loans
-# Run migrations
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
-
-# github
-
-git init
-git add .
-git commit -m "Initial commit"
-
-# Clone and build 
-git clone https://github.com/waboke/lending-app.git
-cd lending-app/backend
-docker-compose up --build
 
 # Lending App Setup Guide
 
@@ -38,21 +8,37 @@ git clone https://github.com/waboke/lending-app.git
 
 ## 2. Navigate into the project
 
-cd lending-app/backend
+cd lending-app
 
-##  3. Create environment file
+##  3. Create environment file inside the backend folder
 
 Copy the example file:
-cp .env.example .env
+cp .env .env
 
 ##  4. Make sure Docker is installed
 
 Check:
 docker --version
 docker-compose --version
+# If not installed, install Docker first.
+# start docker deamon
+# Check if Docker is running
+docker info
+# Start Docker
 
-If not installed, install Docker first.
-
+sudo systemctl start docker
+# Then enable it:
+sudo systemctl enable docker
+# If Docker is running but still failing:
+sudo usermod -aG docker $USER
+# Then log out and log back in, or run:
+newgrp docker
+# Point to correct socket
+export DOCKER_HOST=unix:///var/run/docker.sock
+# try this
+docker ps
+# Verify everything works
+docker run hello-world
 ##  5. Run the application
 
 docker-compose up --build
@@ -118,3 +104,29 @@ git checkout -b feature-your-feature-name
 git push origin feature-your-feature-name
 
 ### Then create a Pull Request on GitHub
+
+#
+# Setup the repository
+#
+
+# Install the public key for the repository (if not done previously):
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+
+# Create the repository configuration file:
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+
+#
+# Install pgAdmin
+#
+
+# Install for both desktop and web modes:
+sudo apt install pgadmin4
+
+# Install for desktop mode only:
+sudo apt install pgadmin4-desktop
+
+# Install for web mode only: 
+sudo apt install pgadmin4-web 
+
+# Configure the webserver, if you installed pgadmin4-web:
+sudo /usr/pgadmin4/bin/setup-web.sh

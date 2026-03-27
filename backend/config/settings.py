@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG = os.getenv('DEBUG') == 'False'
+DEBUG = os.getenv('DEBUG') == 'True'
 
 #ALLOWED_HOSTS = ['*']
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'notifications',
     'payments',
     'users',
+    'kyc',
+    'otp',
+    'user_profile',
     #thrd party apps
     "rest_framework",
     'drf_yasg',
@@ -114,7 +117,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
-
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

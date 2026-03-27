@@ -28,6 +28,8 @@ urlpatterns = [
     path('api/nortifications/', include('notifications.urls')),
     path('api/credit/', include('credit.urls')),
     path('api/core/', include('core.urls')),
+    path('api/kyc/', include('kyc.urls')),
+    path('api/otp/', include('otp.urls')),
     #path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0)),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
