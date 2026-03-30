@@ -1,0 +1,172 @@
+{
+  "info": {
+    "name": "Nigeria Lending App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"},
+    {"key": "access_token", "value": ""},
+    {"key": "admin_token", "value": ""},
+    {"key": "user_id", "value": ""},
+    {"key": "loan_application_id", "value": ""},
+    {"key": "loan_id", "value": ""},
+    {"key": "payment_reference", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": "{{base_url}}/api/v1/auth/register/",
+        "body": {"mode": "raw", "raw": "{\n  \"email\": \"borrower@example.com\",\n  \"phone_number\": \"08030000001\",\n  \"password\": \"Pass1234!\"\n}"}
+      }
+    },
+    {
+      "name": "Borrower Login",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": "{{base_url}}/api/v1/auth/login/",
+        "body": {"mode": "raw", "raw": "{\n  \"email\": \"borrower@example.com\",\n  \"password\": \"Pass1234!\"\n}"}
+      }
+    },
+    {
+      "name": "Send OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/otp/send/",
+        "body": {"mode": "raw", "raw": "{\n  \"channel\": \"sms\",\n  \"purpose\": \"registration\"\n}"}
+      }
+    },
+    {
+      "name": "Verify OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/otp/verify/",
+        "body": {"mode": "raw", "raw": "{\n  \"code\": \"PUT_OTP_HERE\",\n  \"purpose\": \"registration\"\n}"}
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/profile/",
+        "body": {"mode": "raw", "raw": "{\n  \"customer_category\": \"civil_servant\",\n  \"residency_status\": \"resident_nigeria\",\n  \"first_name\": \"Amina\",\n  \"last_name\": \"Okafor\",\n  \"date_of_birth\": \"1991-04-12\",\n  \"national_id\": \"NAT123456\",\n  \"bvn\": \"12345678901\",\n  \"nin\": \"22334455667\",\n  \"country_of_residence\": \"Nigeria\",\n  \"state_of_residence\": \"Lagos\",\n  \"currency_preference\": \"NGN\",\n  \"employer_name\": \"Ministry of Finance\",\n  \"staff_or_service_number\": \"MOF-9981\",\n  \"monthly_income\": \"250000.00\"\n}"}
+      }
+    },
+    {
+      "name": "Submit KYC",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/kyc/submit/",
+        "body": {"mode": "raw", "raw": "{\n  \"id_type\": \"national_id\",\n  \"id_number\": \"NAT123456\"\n}"}
+      }
+    },
+    {
+      "name": "Admin Approve KYC",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+        "url": "{{base_url}}/api/v1/kyc/review/{{user_id}}/approve/"
+      }
+    },
+    {
+      "name": "Credit Evaluate",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+        "url": "{{base_url}}/api/v1/credit/evaluate/"
+      }
+    },
+    {
+      "name": "List Loan Products",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+        "url": "{{base_url}}/api/v1/loan-products/"
+      }
+    },
+    {
+      "name": "Create Loan Application",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/loan-applications/",
+        "body": {"mode": "raw", "raw": "{\n  \"product\": \"11111111-1111-1111-1111-111111111111\",\n  \"requested_amount\": \"150000.00\",\n  \"tenure_months\": 6\n}"}
+      }
+    },
+    {
+      "name": "Submit Loan Application",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+        "url": "{{base_url}}/api/v1/loan-applications/{{loan_application_id}}/submit/"
+      }
+    },
+    {
+      "name": "Admin Approve Loan Application",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+        "url": "{{base_url}}/api/v1/loan-applications/{{loan_application_id}}/approve/"
+      }
+    },
+    {
+      "name": "Admin Disburse Loan",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+        "url": "{{base_url}}/api/v1/loans/{{loan_id}}/disburse/"
+      }
+    },
+    {
+      "name": "Loan Schedule",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+        "url": "{{base_url}}/api/v1/loans/{{loan_id}}/schedule/"
+      }
+    },
+    {
+      "name": "Initiate Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{access_token}}"}
+        ],
+        "url": "{{base_url}}/api/v1/payments/initiate/",
+        "body": {"mode": "raw", "raw": "{\n  \"loan\": \"{{loan_id}}\",\n  \"amount\": \"30000.00\",\n  \"payment_method\": \"bank_transfer\"\n}"}
+      }
+    },
+    {
+      "name": "Payment Webhook",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": "{{base_url}}/api/v1/payments/webhook/",
+        "body": {"mode": "raw", "raw": "{\n  \"provider\": \"manual\",\n  \"event_id\": \"evt-001\",\n  \"event_type\": \"payment.success\",\n  \"reference\": \"{{payment_reference}}\"\n}"}
+      }
+    }
+  ]
+}
