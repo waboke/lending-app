@@ -1,120 +1,91 @@
+# Nigeria Lending Fullstack
 
-docker-compose down --volumes --remove-orphans
-docker system prune -f
+This package contains a fullstack lending starter with:
+- `backend/` Django REST Framework API
+- `frontend/` React + Vite frontend
+- `compose.yaml` at the root for the whole stack
+- branch-office administration for Nigeria operations
+- customer categories: military, paramilitary, civil servant, private sector, businessman
+- residency handling for Nigeria residents and diaspora users
+
+## Core business features
+- customer registration and JWT login
+- OTP send and verify
+- profile management with branch selection
+- KYC submission and approval
+- risk segmentation and credit evaluation
+- loan products, applications, recommendation, approval, disbursement
+- repayment schedule generation
+- payment initiation and webhook simulation
+- branch dashboard and branch-scoped staff queue
+
+## Run everything
+```bash
+cd nigeria-lending-fullstack
+cp frontend/.env.example frontend/.env
+
 docker-compose up --build
+```
 
-# Run server
-docker-compose up
+## Run only the backend services
+```bash
+docker-compose up backend db redis --build
+docker compose up -d db redis backend frontend
+```
 
-docker-compose up --build
-
-docker-compose exec web python manage.py shell
-
-# Create superuser
-docker-compose exec web python manage.py createsuperuser
-
-# Create New App
-docker-compose exec web python manage.py startapp loans
-# Run migrations
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
-
-# github
-
-git init
-git add .
-git commit -m "Initial commit"
-
-# Clone and build 
-git clone https://github.com/waboke/lending-app.git
-cd lending-app/backend
-docker-compose up --build
-
-# Lending App Setup Guide
-
-##  1. Clone the repository
-
-git clone https://github.com/waboke/lending-app.git
-
-## 2. Navigate into the project
-
-cd lending-app/backend
-
-##  3. Create environment file
-
-Copy the example file:
+## Run frontend locally
+```bash
+cd frontend
 cp .env.example .env
+npm install
+npm run dev
+```
 
-##  4. Make sure Docker is installed
+## Useful URLs
+- frontend: http://localhost:5173
+- backend API: http://localhost:8000
+- admin: http://localhost:8000/admin
 
-Check:
-docker --version
-docker-compose --version
+## Django setup after containers start
+```bash
+docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py loaddata apps/branch/fixtures/branches.json
+docker compose exec backend python manage.py loaddata apps/loan/fixtures/loan_products.json
+```
 
-If not installed, install Docker first.
+## Important note about migrations
+The package includes model code but no generated migration files beyond placeholders. Create them after extracting:
+```bash
+docker compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py migrate
 
-##  5. Run the application
-
-docker-compose up --build
-
-## stop only react container
-docker-compose stop react
-## stop everthing
-docker-compose down
-## Start only the backend
-docker-compose up web
-
-##  6. Run database migrations (first time only)
-
-Open a new terminal and run:
-docker-compose exec web python manage.py migrate 
-
-
-##  7. Create admin user (optional)
-
-docker-compose exec web python manage.py createsuperuser
-
-##  8. Access the application
-
-http://localhost:8080
+docker-compose run --rm backend python manage.py makemigrations branch
+docker-compose run --rm backend python manage.py migrate
+docker-compose run --rm backend python manage.py createsuperuser
+```
 
 
-##  9. Running commands (IMPORTANT)
+## Staff / branch model
+- each customer has a `home_branch`
+- diaspora customers must choose a servicing branch in Nigeria
+- branch staff can only view and act on cases in their own branch
+- head office and super admins can view everything
 
-Always run Django commands like this:
+## Suggested manual test flow
+1. Register customer
+2. Login and copy access token
+3. Send OTP and verify OTP
+4. Save profile with `home_branch`
+5. Submit KYC
+6. Approve KYC from admin or staff account
+7. Run credit evaluation
+8. Create loan application
+9. Submit application
+10. Branch recommend the application
+11. Approve application
+12. Disburse loan
+13. Initiate payment
+14. Trigger webhook
 
-docker-compose exec web python manage.py <command>
-
-Example:
-docker-compose exec web python manage.py makemigrations
-
-##  10. Stop the application
-
-Press CTRL + C or run:
-docker-compose down
-
-##  11. If something breaks
-
-Try:
-
-docker-compose down
-docker-compose up --build
-
-##  Notes
-
-* Do NOT commit the `.env` file
-* Use `.env.example` as a reference
-* Make sure ports like 8080 are free
-* First run may take a few minutes
-
-##  Team Workflow (IMPORTANT)
-
-### Create a new branch before working
-
-git checkout -b feature-your-feature-name
-
-### Push your branch
-
-git push origin feature-your-feature-name
-
-### Then create a Pull Request on GitHub
+## Postman
+Import the root `postman_collection.json` file.

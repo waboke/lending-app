@@ -1,32 +1,101 @@
-docker-compose down --volumes --remove-orphans
-docker system prune -f
-docker-compose up --build
+# Lending App Backend (DRF + Docker)
 
-# Run server
-docker-compose up
-docker-compose down
-docker-compose up --build
+This is a Nigeria-first lending backend with support for diaspora borrowers.
 
+## Core borrower segments
+- Military
+- Paramilitary
+- Civil servants
+- Businessmen
+- Nigeria residents and diaspora Nigerians
 
-docker-compose exec web python manage.py shell
+## 1. Quick start
+```bash
+cp .env .env.local
+docker compose up --build
+```
 
-# Create superuser
-docker-compose exec web python manage.py createsuperuser
+In another shell:
+```bash
+docker compose exec web python manage.py makemigrations
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py loaddata apps/loan/fixtures/loan_products.json
+```
+## 2. Quick start
+```bash
+docker-compose up -d
+docker-compose up db redis backend
+docker compose run --rm backend python manage.py makemigrations branch
+docker compose run --rm backend python manage.py migrate branch
+docker compose run --rm backend python manage.py migrate
+docker compose run --rm backend python manage.py createsuperuser
 
-# Create New App
-docker-compose exec web python manage.py startapp loans
-# Run migrations
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
+```
+## Suggested test flow
+1. Register borrower
+2. Login and copy access token
+3. Send OTP and verify OTP
+4. Create/update profile
+5. Submit KYC
+6. Login as admin and approve KYC
+7. Run credit evaluation
+8. List loan products
+9. Create loan application
+10. Submit loan application
+11. Login as admin and approve application
+12. Disburse loan
+13. View repayment schedule
+14. Initiate payment
+15. Trigger payment webhook
 
-# github
+## Main endpoints
+- `POST /api/v1/auth/register/`
+- `POST /api/v1/auth/login/`
+- `GET/PATCH /api/v1/auth/me/`
+- `POST /api/v1/otp/send/`
+- `POST /api/v1/otp/verify/`
+- `GET/PATCH /api/v1/profile/`
+- `GET/POST /api/v1/profile/bank-accounts/`
+- `GET /api/v1/kyc/status/`
+- `PATCH /api/v1/kyc/submit/`
+- `POST /api/v1/kyc/review/<user_id>/approve/`
+- `POST /api/v1/credit/evaluate/`
+- `GET /api/v1/credit/latest/`
+- `GET /api/v1/loan-products/`
+- `GET/POST /api/v1/loan-applications/`
+- `POST /api/v1/loan-applications/<id>/submit/`
+- `POST /api/v1/loan-applications/<id>/approve/`
+- `GET /api/v1/loans/`
+- `POST /api/v1/loans/<id>/disburse/`
+- `GET /api/v1/loans/<id>/schedule/`
+- `POST /api/v1/payments/initiate/`
+- `POST /api/v1/payments/webhook/`
+- `GET /api/v1/payments/<id>/`
 
-git init
-git add .
-git commit -m "Initial commit"
+## Example borrower profile payload
+```json
+{
+  "customer_category": "civil_servant",
+  "residency_status": "resident_nigeria",
+  "first_name": "Amina",
+  "last_name": "Okafor",
+  "date_of_birth": "1991-04-12",
+  "national_id": "NAT123456",
+  "bvn": "12345678901",
+  "nin": "22334455667",
+  "country_of_residence": "Nigeria",
+  "state_of_residence": "Lagos",
+  "has_nigerian_bank_account": true,
+  "has_foreign_bank_account": false,
+  "currency_preference": "NGN",
+  "employer_name": "Ministry of Finance",
+  "staff_or_service_number": "MOF-9981",
+  "monthly_income": "250000.00"
+}
+```
 
-
-# Clone and build 
-git clone https://github.com/waboke/lending-app.git
-cd lending-app/backend
-docker-compose up --build
+## Notes
+- OTP returns the code in the response for local testing only.
+- KYC approval and loan approval are admin-only endpoints.
+- Payments are simulated via the webhook endpoint for testing.

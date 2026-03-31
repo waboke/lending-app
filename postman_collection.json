@@ -1,0 +1,391 @@
+{
+  "info": {
+    "name": "Nigeria Lending Fullstack API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "branch_id",
+      "value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    },
+    {
+      "key": "application_id",
+      "value": ""
+    },
+    {
+      "key": "loan_id",
+      "value": ""
+    },
+    {
+      "key": "payment_reference",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "List Branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/branches/"
+          }
+        },
+        {
+          "name": "Branch Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/branches/staff/dashboard/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"phone_number\": \"08030000000\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/auth/register/"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/auth/login/"
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/auth/me/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "OTP",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"sms\",\n  \"purpose\": \"registration\"\n}"
+            },
+            "url": "{{base_url}}/otp/send/"
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"123456\",\n  \"purpose\": \"registration\"\n}"
+            },
+            "url": "{{base_url}}/otp/verify/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile and KYC",
+      "item": [
+        {
+          "name": "Save Profile Private Sector",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"home_branch\": \"{{branch_id}}\",\n  \"customer_category\": \"private_sector\",\n  \"residency_status\": \"resident_nigeria\",\n  \"first_name\": \"Ada\",\n  \"last_name\": \"Okafor\",\n  \"date_of_birth\": \"1992-08-14\",\n  \"bvn\": \"22334455667\",\n  \"state_of_residence\": \"Lagos\",\n  \"country_of_residence\": \"Nigeria\",\n  \"employer_name\": \"Zenith Technologies Ltd\",\n  \"monthly_income\": \"350000.00\"\n}"
+            },
+            "url": "{{base_url}}/profile/"
+          }
+        },
+        {
+          "name": "Submit KYC",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_type\": \"nin\",\n  \"id_number\": \"12345678901\"\n}"
+            },
+            "url": "{{base_url}}/kyc/submit/"
+          }
+        },
+        {
+          "name": "Approve KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/kyc/review/{{user_id}}/approve/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Credit and Loans",
+      "item": [
+        {
+          "name": "Evaluate Credit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/credit/evaluate/"
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/loan-products/"
+          }
+        },
+        {
+          "name": "Create Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": \"22222222-2222-2222-2222-222222222222\",\n  \"requested_amount\": \"200000.00\",\n  \"tenure_months\": 6\n}"
+            },
+            "url": "{{base_url}}/loan-applications/"
+          }
+        },
+        {
+          "name": "Submit Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/loan-applications/{{application_id}}/submit/"
+          }
+        },
+        {
+          "name": "Recommend Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recommended\": true,\n  \"note\": \"Verified by branch office\"\n}"
+            },
+            "url": "{{base_url}}/loan-applications/{{application_id}}/recommend/"
+          }
+        },
+        {
+          "name": "Approve Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/loan-applications/{{application_id}}/approve/"
+          }
+        },
+        {
+          "name": "Disburse Loan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/loans/{{loan_id}}/disburse/"
+          }
+        },
+        {
+          "name": "Loan Schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": "{{base_url}}/loans/{{loan_id}}/schedule/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Initiate Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loan\": \"{{loan_id}}\",\n  \"amount\": \"50000.00\",\n  \"payment_method\": \"bank_transfer\"\n}"
+            },
+            "url": "{{base_url}}/payments/initiate/"
+          }
+        },
+        {
+          "name": "Webhook Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"manual\",\n  \"event_id\": \"evt-001\",\n  \"event_type\": \"payment.success\",\n  \"reference\": \"{{payment_reference}}\"\n}"
+            },
+            "url": "{{base_url}}/payments/webhook/"
+          }
+        }
+      ]
+    }
+  ]
+}

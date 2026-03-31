@@ -1,0 +1,20 @@
+import axios from 'axios'
+
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
+})
+
+export const setAuthToken = (accessToken) => {
+  if (accessToken) {
+    localStorage.setItem('access_token', accessToken)
+    api.defaults.headers.Authorization = `Bearer ${accessToken}`
+  } else {
+    localStorage.removeItem('access_token')
+    delete api.defaults.headers.Authorization
+  }
+}
+
+const existingToken = localStorage.getItem('access_token')
+if (existingToken) {
+  api.defaults.headers.Authorization = `Bearer ${existingToken}`
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "model": "branch.branch",
+    "pk": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "fields": {
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z",
+      "is_active": true,
+      "name": "Lagos Mainland Branch",
+      "code": "LOS-MAIN",
+      "state": "Lagos",
+      "lga": "Ikeja",
+      "address": "12 Allen Avenue, Ikeja, Lagos",
+      "phone_number": "+2348000000001",
+      "email": "lagos@lending.local"
+    }
+  },
+  {
+    "model": "branch.branch",
+    "pk": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "fields": {
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z",
+      "is_active": true,
+      "name": "Abuja Central Branch",
+      "code": "ABJ-CENT",
+      "state": "FCT",
+      "lga": "Municipal",
+      "address": "20 Herbert Macaulay Way, Abuja",
+      "phone_number": "+2348000000002",
+      "email": "abuja@lending.local"
+    }
+  },
+  {
+    "model": "branch.branch",
+    "pk": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "fields": {
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z",
+      "is_active": true,
+      "name": "Port Harcourt Branch",
+      "code": "PHC-CENT",
+      "state": "Rivers",
+      "lga": "Port Harcourt",
+      "address": "5 Aba Road, Port Harcourt",
+      "phone_number": "+2348000000003",
+      "email": "ph@lending.local"
+    }
+  }
+]

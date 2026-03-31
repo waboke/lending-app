@@ -1,33 +1,16 @@
-
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-from rest_framework import permissions
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="Lending API",
-      default_version='v1',
-      description="API documentation for lending app",
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
-
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # This creates /api/users/...
-    path('api/users/', include('users.urls')),
-    path('api/loans/', include('loans.urls')),
-    path('api/payments/', include('payments.urls')),
-    path('api/nortifications/', include('notifications.urls')),
-    path('api/credit/', include('credit.urls')),
-    path('api/core/', include('core.urls')),
-    #path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0)),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/v1/auth/', include('apps.users.urls')),
+    path('api/v1/branches/', include('apps.branch.urls')),
+    path('api/v1/otp/', include('apps.otp.urls')),
+    path('api/v1/profile/', include('apps.user_profile.urls')),
+    path('api/v1/kyc/', include('apps.kyc.urls')),
+    path('api/v1/credit/', include('apps.credit.urls')),
+    path('api/v1/', include('apps.loan.urls')),
+    path('api/v1/payments/', include('apps.payment.urls')),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+]
