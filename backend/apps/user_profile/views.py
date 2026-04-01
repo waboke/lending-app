@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from apps.branch.models import Branch
 from .models import Profile, BankAccount
 from .serializers import ProfileSerializer, BankAccountSerializer
 
@@ -9,9 +10,11 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
+        default_branch = Branch.objects.filter(is_active=True).order_by('name').first()
         profile, _ = Profile.objects.get_or_create(
             user=self.request.user,
             defaults={
+                'home_branch': default_branch,
                 'customer_category': 'civil_servant',
                 'residency_status': 'resident_nigeria',
                 'first_name': self.request.user.email.split('@')[0],

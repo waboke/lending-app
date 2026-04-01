@@ -18,7 +18,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone_number', 'is_phone_verified', 'is_email_verified']
+        fields = ['id', 'email', 'phone_number', 'is_phone_verified', 'is_email_verified', 'role', 'is_staff']
+        read_only_fields = ['role', 'is_staff']
 
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -26,4 +27,5 @@ class LoginSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['email'] = user.email
+        token['role'] = user.role
         return token

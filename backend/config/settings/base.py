@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'apps.core',
     'apps.users',
+    'apps.branch',
     'apps.otp',
     'apps.user_profile',
     'apps.kyc',

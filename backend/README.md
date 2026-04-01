@@ -9,7 +9,7 @@ This is a Nigeria-first lending backend with support for diaspora borrowers.
 - Businessmen
 - Nigeria residents and diaspora Nigerians
 
-## Quick start, Run full app from root
+## Quick start
 ```bash
 cp .env .env.local
 docker compose up --build

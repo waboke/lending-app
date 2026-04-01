@@ -4,7 +4,15 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from apps.credit.models import CreditAssessment, EligibilityDecisionStatus
 from apps.kyc.models import KYCStatus
-from .models import LoanProduct, LoanApplication, Loan, RepaymentSchedule, LoanApplicationStatus, LoanStatus
+from .models import (
+    LoanProduct,
+    LoanApplication,
+    Loan,
+    RepaymentSchedule,
+    LoanApplicationStatus,
+    LoanStatus,
+    BranchDecisionStatus,
+)
 
 
 def get_available_products(user):
@@ -22,6 +30,8 @@ def validate_borrower_for_application(user, product, requested_amount):
         raise ValueError('Phone must be verified before applying')
     if not hasattr(user, 'profile'):
         raise ValueError('Profile is required')
+    if not user.profile.home_branch:
+        raise ValueError('A Nigerian home branch must be selected before applying')
     if not hasattr(user, 'kyc_submission') or user.kyc_submission.status != KYCStatus.APPROVED:
         raise ValueError('KYC must be approved before applying')
     assessment = CreditAssessment.objects.filter(user=user).order_by('-created_at').first()
@@ -39,23 +49,39 @@ def validate_borrower_for_application(user, product, requested_amount):
 @transaction.atomic
 def submit_application(application: LoanApplication):
     validate_borrower_for_application(application.user, application.product, application.requested_amount)
+    application.branch = application.user.profile.home_branch
     application.status = LoanApplicationStatus.SUBMITTED
-    application.save(update_fields=['status', 'updated_at'])
+    application.save(update_fields=['branch', 'status', 'updated_at'])
     return application
 
 
 @transaction.atomic
-def approve_application(application: LoanApplication):
-    if application.status != LoanApplicationStatus.SUBMITTED:
-        raise ValueError('Only submitted applications can be approved')
+def recommend_application(application: LoanApplication, reviewer, recommended: bool, note: str = ''):
+    if application.status not in [LoanApplicationStatus.SUBMITTED, LoanApplicationStatus.IN_REVIEW]:
+        raise ValueError('Only submitted or in review applications can be recommended')
+    application.status = LoanApplicationStatus.IN_REVIEW
+    application.branch_decision = BranchDecisionStatus.RECOMMENDED if recommended else BranchDecisionStatus.NOT_RECOMMENDED
+    application.branch_decision_note = note
+    application.reviewed_by = reviewer
+    application.save(update_fields=['status', 'branch_decision', 'branch_decision_note', 'reviewed_by', 'updated_at'])
+    return application
+
+
+@transaction.atomic
+def approve_application(application: LoanApplication, reviewer=None):
+    if application.status not in [LoanApplicationStatus.SUBMITTED, LoanApplicationStatus.IN_REVIEW]:
+        raise ValueError('Only submitted or in review applications can be approved')
     application.status = LoanApplicationStatus.APPROVED
-    application.save(update_fields=['status', 'updated_at'])
+    if reviewer:
+        application.reviewed_by = reviewer
+    application.save(update_fields=['status', 'reviewed_by', 'updated_at'])
     principal = application.requested_amount
     rate = application.product.interest_rate
     total_interest = principal * (rate / Decimal('100'))
     total_repayment = principal + total_interest
     loan = Loan.objects.create(
         user=application.user,
+        branch=application.branch,
         application=application,
         principal=principal,
         interest_rate=rate,

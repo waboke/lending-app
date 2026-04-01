@@ -2,13 +2,21 @@ from django.conf import settings
 from django.db import models
 from apps.core.models import BaseModel
 from apps.user_profile.models import CustomerCategory
+from apps.branch.models import Branch
 
 
 class LoanApplicationStatus(models.TextChoices):
     DRAFT = 'draft', 'Draft'
     SUBMITTED = 'submitted', 'Submitted'
+    IN_REVIEW = 'in_review', 'In Review'
     APPROVED = 'approved', 'Approved'
     REJECTED = 'rejected', 'Rejected'
+
+
+class BranchDecisionStatus(models.TextChoices):
+    PENDING = 'pending', 'Pending'
+    RECOMMENDED = 'recommended', 'Recommended'
+    NOT_RECOMMENDED = 'not_recommended', 'Not Recommended'
 
 
 class LoanStatus(models.TextChoices):
@@ -33,15 +41,20 @@ class LoanProduct(BaseModel):
 
 class LoanApplication(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='loan_applications')
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='loan_applications')
     product = models.ForeignKey(LoanProduct, on_delete=models.CASCADE)
     requested_amount = models.DecimalField(max_digits=12, decimal_places=2)
     tenure_months = models.PositiveIntegerField()
     status = models.CharField(max_length=20, choices=LoanApplicationStatus.choices, default=LoanApplicationStatus.DRAFT)
+    branch_decision = models.CharField(max_length=30, choices=BranchDecisionStatus.choices, default=BranchDecisionStatus.PENDING)
+    branch_decision_note = models.TextField(blank=True, null=True)
     review_note = models.TextField(blank=True, null=True)
+    reviewed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_loan_applications')
 
 
 class Loan(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='loans')
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='loans')
     application = models.OneToOneField(LoanApplication, on_delete=models.CASCADE, related_name='loan')
     principal = models.DecimalField(max_digits=12, decimal_places=2)
     interest_rate = models.DecimalField(max_digits=5, decimal_places=2)

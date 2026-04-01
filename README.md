@@ -1,17 +1,38 @@
-# Lending Fullstack Structure
+# Nigeria Lending Fullstack
 
-This package is organized into two folders:
+This package contains a fullstack lending starter with:
+- `backend/` Django REST Framework API
+- `frontend/` React + Vite frontend
+- `compose.yaml` at the root for the whole stack
+- branch-office administration for Nigeria operations
+- customer categories: military, paramilitary, civil servant, private sector, businessman
+- residency handling for Nigeria residents and diaspora users
 
-- `backend/` - Django REST Framework backend
-- `frontend/` - React frontend built with Vite
+## Core business features
+- customer registration and JWT login
+- OTP send and verify
+- profile management with branch selection
+- KYC submission and approval
+- risk segmentation and credit evaluation
+- loan products, applications, recommendation, approval, disbursement
+- repayment schedule generation
+- payment initiation and webhook simulation
+- branch dashboard and branch-scoped staff queue
 
-## Backend
-The backend folder contains the lending API, Docker files, Compose files, Postman collection, and README from the DRF implementation.
+## Run everything
+```bash
+cd nigeria-lending-fullstack
+cp frontend/.env.example frontend/.env
 
-## Frontend
-The frontend folder contains a minimal React app that can test the main lending flows against the DRF backend.
+docker compose up --build
+```
 
-### Start frontend
+## Run only the backend services
+```bash
+docker compose up backend db redis --build
+```
+
+## Run frontend locally
 ```bash
 cd frontend
 cp .env.example .env
@@ -19,73 +40,46 @@ npm install
 npm run dev
 ```
 
-### Default API base URL
-`http://localhost:8000/api/v1`
+## Useful URLs
+- frontend: http://localhost:5173
+- backend API: http://localhost:8000
+- admin: http://localhost:8000/admin
 
-## Suggested local run order
-
-### Terminal 1
+## Django setup after containers start
 ```bash
-cd backend
-docker compose up --build
+docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py loaddata apps/branch/fixtures/branches.json
+docker compose exec backend python manage.py loaddata apps/loan/fixtures/loan_products.json
 ```
 
-### Terminal 2
+## Important note about migrations
+The package includes model code but no generated migration files beyond placeholders. Create them after extracting:
 ```bash
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
+docker compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py migrate
 ```
-# run from root dir
-docker compose up --build
 
-Then open:
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:8000`
-- Django admin: `http://localhost:8000/admin`
-# If frontend is too slow in Docker, you can still run it locally:
-# Disable frontend container temporarily
-# Comment out this block in compose:
-``` 
-# frontend:
-#   ...
-```
-# Then run:
+## Staff / branch model
+- each customer has a `home_branch`
+- diaspora customers must choose a servicing branch in Nigeria
+- branch staff can only view and act on cases in their own branch
+- head office and super admins can view everything
 
-cd frontend
-npm install
-npm run dev
+## Suggested manual test flow
+1. Register customer
+2. Login and copy access token
+3. Send OTP and verify OTP
+4. Save profile with `home_branch`
+5. Submit KYC
+6. Approve KYC from admin or staff account
+7. Run credit evaluation
+8. Create loan application
+9. Submit application
+10. Branch recommend the application
+11. Approve application
+12. Disburse loan
+13. Initiate payment
+14. Trigger webhook
 
-# If backend starts before DB is ready, you may see errors.
-# If that happens, restart:
-
-docker compose restart backend
-# Stop and remove this project (safe reset)
-
-## 1. Run this inside your project folder:
-
-docker compose down --volumes --remove-orphans
-
-## 2. Then remove any leftover containers:
-
-docker ps -a
-docker rm -f $(docker ps -aq)
-
-# Remove images (clean rebuild)
-docker images
-docker rmi -f $(docker images -q)
-
-# Remove volumes (important for Django/DB reset)
-## This deletes database data
-docker volume ls
-docker volume rm $(docker volume ls -q)
-# Remove networks
-docker network prune -f
-# One-command full cleanup (recommended)
-docker system prune -a --volumes -f
-#   docker system prune -a --volumes -f
-sudo systemctl stop docker
-sudo rm -rf /var/lib/docker
-sudo rm -rf /var/lib/containerd
-sudo systemctl start docker
+## Postman
+Import the root `postman_collection.json` file.

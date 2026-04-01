@@ -3,6 +3,8 @@ from .models import Profile, BankAccount, CustomerCategory, ResidencyStatus
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    home_branch_name = serializers.CharField(source='home_branch.name', read_only=True)
+
     class Meta:
         model = Profile
         fields = '__all__'
@@ -11,8 +13,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         category = attrs.get('customer_category', getattr(self.instance, 'customer_category', None))
         residency = attrs.get('residency_status', getattr(self.instance, 'residency_status', None))
+        home_branch = attrs.get('home_branch', getattr(self.instance, 'home_branch', None))
 
-        if category in [CustomerCategory.MILITARY, CustomerCategory.PARAMILITARY, CustomerCategory.CIVIL_SERVANT]:
+        if category in [
+            CustomerCategory.MILITARY,
+            CustomerCategory.PARAMILITARY,
+            CustomerCategory.CIVIL_SERVANT,
+            CustomerCategory.PRIVATE_SECTOR,
+        ]:
             if not attrs.get('employer_name') and not getattr(self.instance, 'employer_name', None):
                 raise serializers.ValidationError({'employer_name': 'Required for salaried users'})
             if not attrs.get('monthly_income') and not getattr(self.instance, 'monthly_income', None):
@@ -33,6 +41,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         if residency == ResidencyStatus.DIASPORA:
             if not attrs.get('foreign_address') and not getattr(self.instance, 'foreign_address', None):
                 raise serializers.ValidationError({'foreign_address': 'Required'})
+            if not home_branch:
+                raise serializers.ValidationError({'home_branch': 'Diaspora users must select a servicing branch in Nigeria'})
+
+        if not home_branch:
+            raise serializers.ValidationError({'home_branch': 'Home branch is required'})
+
         return attrs
 
 

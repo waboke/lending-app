@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.db import models
 from apps.core.models import BaseModel
+from apps.branch.models import Branch
 
 
 class CustomerCategory(models.TextChoices):
     MILITARY = 'military', 'Military'
     PARAMILITARY = 'paramilitary', 'Paramilitary'
     CIVIL_SERVANT = 'civil_servant', 'Civil Servant'
-    PRIVATE_SECTOR = "private_sector", "Private Sector"
+    PRIVATE_SECTOR = 'private_sector', 'Private Sector'
     BUSINESSMAN = 'businessman', 'Businessman'
 
 
@@ -25,6 +26,7 @@ class CurrencyPreference(models.TextChoices):
 
 class Profile(BaseModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    home_branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='customer_profiles')
     customer_category = models.CharField(max_length=30, choices=CustomerCategory.choices)
     residency_status = models.CharField(max_length=30, choices=ResidencyStatus.choices)
     first_name = models.CharField(max_length=150)

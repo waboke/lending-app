@@ -22,12 +22,12 @@
       "created_at": "2026-01-01T00:00:00Z",
       "updated_at": "2026-01-01T00:00:00Z",
       "is_active": true,
-      "name": "Business Working Capital",
-      "customer_category": "businessman",
-      "is_diaspora_allowed": true,
-      "min_amount": "100000.00",
-      "max_amount": "1500000.00",
-      "interest_rate": "12.50",
+      "name": "Private Sector Salary Advance",
+      "customer_category": "private_sector",
+      "is_diaspora_allowed": false,
+      "min_amount": "50000.00",
+      "max_amount": "700000.00",
+      "interest_rate": "12.00",
       "tenure_months": 6
     }
   },
@@ -38,13 +38,29 @@
       "created_at": "2026-01-01T00:00:00Z",
       "updated_at": "2026-01-01T00:00:00Z",
       "is_active": true,
-      "name": "Military Emergency Loan",
-      "customer_category": "military",
-      "is_diaspora_allowed": false,
+      "name": "Business Working Capital",
+      "customer_category": "businessman",
+      "is_diaspora_allowed": true,
       "min_amount": "100000.00",
-      "max_amount": "750000.00",
-      "interest_rate": "9.00",
-      "tenure_months": 12
+      "max_amount": "1500000.00",
+      "interest_rate": "15.00",
+      "tenure_months": 6
+    }
+  },
+  {
+    "model": "loan.loanproduct",
+    "pk": "44444444-4444-4444-4444-444444444444",
+    "fields": {
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z",
+      "is_active": true,
+      "name": "Diaspora Support Loan",
+      "customer_category": null,
+      "is_diaspora_allowed": true,
+      "min_amount": "100000.00",
+      "max_amount": "1000000.00",
+      "interest_rate": "14.00",
+      "tenure_months": 6
     }
   }
 ]

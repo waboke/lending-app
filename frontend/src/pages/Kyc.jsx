@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 
 export default function Kyc() {
@@ -6,11 +6,15 @@ export default function Kyc() {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    api.get('/kyc/status/').then(res => setForm({ id_type: res.data.id_type || 'nin', id_number: res.data.id_number || '' })).catch(() => {})
+  }, [])
+
   const submit = async (e) => {
     e.preventDefault()
     setError('')
     try {
-      const res = await api.post('/kyc/submit/', form)
+      const res = await api.patch('/kyc/submit/', form)
       setResponse(res.data)
     } catch (err) {
       setError(err?.response?.data ? JSON.stringify(err.response.data) : 'KYC submit failed')
