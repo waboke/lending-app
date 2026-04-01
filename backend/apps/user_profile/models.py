@@ -7,6 +7,7 @@ class CustomerCategory(models.TextChoices):
     MILITARY = 'military', 'Military'
     PARAMILITARY = 'paramilitary', 'Paramilitary'
     CIVIL_SERVANT = 'civil_servant', 'Civil Servant'
+    PRIVATE_SECTOR = "private_sector", "Private Sector"
     BUSINESSMAN = 'businessman', 'Businessman'
 
 
@@ -50,6 +51,7 @@ class Profile(BaseModel):
             CustomerCategory.MILITARY,
             CustomerCategory.PARAMILITARY,
             CustomerCategory.CIVIL_SERVANT,
+            CustomerCategory.PRIVATE_SECTOR,
         ]
 
     def risk_bucket(self):
