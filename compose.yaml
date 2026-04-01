@@ -1,4 +1,4 @@
-version: "3.9"
+#version: "3.9"
 
 services:
   backend:
@@ -20,6 +20,25 @@ services:
     restart: "no"
     stop_grace_period: 30s
 
+  db:
+    image: postgres:15
+    ports:
+        - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lending_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: "no"
+    stop_grace_period: 30s
 
 
   frontend:
@@ -40,26 +59,7 @@ services:
     restart: "no"
     stop_grace_period: 30s
 
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: ${POSTGRES_HOST}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:${POSTGRES_PORT}"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d, ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    restart: "no"
-    stop_grace_period: 30s
-
+  
   redis:
     image: redis:7
     ports:

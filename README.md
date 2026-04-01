@@ -21,7 +21,6 @@ This package contains a fullstack lending starter with:
 
 ## Run everything
 ```bash
-cd nigeria-lending-fullstack
 cp frontend/.env.example frontend/.env
 
 docker compose up --build
