@@ -80,5 +80,18 @@ docker compose exec backend python manage.py migrate
 13. Initiate payment
 14. Trigger webhook
 
+## Real-time backend (WebSocket)
+The backend now supports live status updates for loan workflow events via Django Channels.
+
+- WebSocket path: `ws://localhost:8000/ws/loans/`
+- Auth: JWT token cookie/session via default Django auth middleware
+- Events:
+  - `loan_application.created`
+  - `loan_application.updated`
+  - `loan.created`
+  - `loan.updated`
+
+Clients are automatically joined to their user and branch groups after login.
+
 ## Postman
 Import the root `postman_collection.json` file.

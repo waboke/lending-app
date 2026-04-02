@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'channels',
     'apps.core',
     'apps.users',
     'apps.branch',
@@ -95,6 +96,15 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.getenv('REDIS_URL', 'redis://redis:6379')],
+        },
+    },
+}
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Lagos'

@@ -24,6 +24,13 @@ class CurrencyPreference(models.TextChoices):
     EUR = 'EUR', 'Euro'
 
 
+class VerificationStatus(models.TextChoices):
+    NOT_VERIFIED = 'not_verified', 'Not Verified'
+    PENDING = 'pending', 'Pending'
+    VERIFIED = 'verified', 'Verified'
+    FAILED = 'failed', 'Failed'
+
+
 class Profile(BaseModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     home_branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='customer_profiles')
@@ -35,6 +42,8 @@ class Profile(BaseModel):
     national_id = models.CharField(max_length=50, blank=True, null=True)
     bvn = models.CharField(max_length=20, blank=True, null=True)
     nin = models.CharField(max_length=20, blank=True, null=True)
+    bvn_verification_status = models.CharField(max_length=20, choices=VerificationStatus.choices, default=VerificationStatus.NOT_VERIFIED)
+    nin_verification_status = models.CharField(max_length=20, choices=VerificationStatus.choices, default=VerificationStatus.NOT_VERIFIED)
     country_of_residence = models.CharField(max_length=100, default='Nigeria')
     state_of_residence = models.CharField(max_length=100, blank=True, null=True)
     foreign_address = models.TextField(blank=True, null=True)
@@ -47,6 +56,11 @@ class Profile(BaseModel):
     business_name = models.CharField(max_length=255, blank=True, null=True)
     average_monthly_turnover = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     years_in_business = models.PositiveIntegerField(default=0)
+    account_number = models.CharField(max_length=20, blank=True, null=True)
+    bank_code = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        app_label = 'user_profile'
 
     def is_salaried(self):
         return self.customer_category in [
@@ -70,4 +84,8 @@ class BankAccount(BaseModel):
     bank_name = models.CharField(max_length=120)
     account_name = models.CharField(max_length=255)
     account_number = models.CharField(max_length=50)
+    bank_code = models.CharField(max_length=10, blank=True, null=True)
     is_default = models.BooleanField(default=False)
+    is_salary_account = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    verification_reference = models.CharField(max_length=120, blank=True, null=True)
